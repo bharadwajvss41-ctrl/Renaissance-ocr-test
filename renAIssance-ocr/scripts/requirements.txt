@@ -1,0 +1,8 @@
+pdf2image
+pillow
+pytesseract
+transformers
+datasets
+torch
+evaluate
+python-docx
