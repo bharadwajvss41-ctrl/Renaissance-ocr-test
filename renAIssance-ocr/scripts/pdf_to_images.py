@@ -5,6 +5,8 @@ import traceback
 PDF_DIR = "/content/drive/MyDrive/RenAIssance/data/pdfs"
 IMG_DIR = "/content/drive/MyDrive/RenAIssance/data/images"
 
+MAX_PAGES = 50   # 🔥 convert only first 50 pages
+
 os.makedirs(IMG_DIR, exist_ok=True)
 
 pdf_files = [f for f in os.listdir(PDF_DIR) if f.endswith(".pdf")]
@@ -21,12 +23,16 @@ for pdf_file in pdf_files:
         book_folder = os.path.join(IMG_DIR, book_name)
         os.makedirs(book_folder, exist_ok=True)
 
-        # Get total number of pages
+        # Get total pages
         info = pdfinfo_from_path(pdf_path)
         total_pages = info["Pages"]
-        print(f"Total pages in PDF: {total_pages}")
 
-        # Count already converted pages
+        pages_to_convert = min(total_pages, MAX_PAGES)
+
+        print(f"Total pages in PDF: {total_pages}")
+        print(f"Will convert first {pages_to_convert} pages only")
+
+        # Check already converted images
         existing_images = [
             f for f in os.listdir(book_folder) if f.endswith(".png")
         ]
@@ -34,20 +40,19 @@ for pdf_file in pdf_files:
 
         print(f"Already converted pages: {converted_pages}")
 
-        if converted_pages >= total_pages:
-            print("All pages already converted. Skipping.")
+        if converted_pages >= pages_to_convert:
+            print("Required pages already converted. Skipping.")
             continue
 
-        # Resume from next missing page
         start_page = converted_pages + 1
         print(f"Resuming from page {start_page}")
 
-        for page_number in range(start_page, total_pages + 1):
-            print(f"Converting page {page_number}/{total_pages}")
+        for page_number in range(start_page, pages_to_convert + 1):
+            print(f"Converting page {page_number}/{pages_to_convert}")
 
             page = convert_from_path(
                 pdf_path,
-                dpi=200,   # safer memory-wise
+                dpi=200,  # 200 is stable and sufficient
                 first_page=page_number,
                 last_page=page_number
             )[0]
