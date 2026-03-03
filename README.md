@@ -1,4 +1,4 @@
-# RenAIssance GSoC 2026 - OCR Evaluation Test
+# RenAIssance OCR Evaluation Test
 
 This repository contains my submission for the RenAIssance Project evaluation test.
 
